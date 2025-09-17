@@ -5,7 +5,7 @@ package:
   description: map and enrich erc20 transfers with metadata by calling a foundational store
 
 imports:
-  token_metadata_store: ../token-metadata-foundational-store/evm-token-metadata-foundational-store-v0.1.0.spkg
+  token_metadata_store: https://github.com/Data-Nexus-Web3/token-metadata-foundational-store/releases/download/v0.1.0/evm-token-metadata-foundational-store-v0.1.0.spkg
 
 protobuf:
   files:

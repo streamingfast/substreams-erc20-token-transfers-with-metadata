@@ -11,3 +11,7 @@ sink-data/
 *.spkg
 .claude
 .vscode
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/substreams-erc20-token-transfers-with-metadata.iml
+/.idea/vcs.xml

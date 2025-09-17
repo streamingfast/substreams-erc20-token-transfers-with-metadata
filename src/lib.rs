@@ -5,7 +5,7 @@ use std::collections::HashSet;
 use std::fmt::Error;
 use substreams::store::FoundationalStore;
 use substreams::{log, Hex};
-use substreams_ethereum::pb::eth::v2::Block;
+use substreams_ethereum::pb::eth::v2::{Block, TransactionTraceStatus};
 
 use crate::pb::erc20::metadata::v1::{TokenMeta, TokenTransfer, TokenTransfers};
 use crate::pb::evm::token::metadata::v1::TokenMetadata;
@@ -28,6 +28,11 @@ fn map_tokens_transfers(
     let mut token_addresses_to_resolve = HashSet::new();
 
     for trx in blk.transaction_traces.iter() {
+        let status = TransactionTraceStatus::try_from(trx.status)?;
+        if status != TransactionTraceStatus::Succeeded {
+            continue
+        }
+
         if let Some(receipt) = &trx.receipt {
             for (log_index, log) in receipt.logs.iter().enumerate() {
                 // Check if this is an ERC20 Transfer event
@@ -84,8 +89,10 @@ fn map_tokens_transfers(
         for entry in resp.entries {
             let code = ResponseCode::try_from(entry.response.as_ref().unwrap().response)?;
             if code != ResponseCode::Found {
-                substreams::log::info!("WARNING token meta not found for adress: 0x{:?}", Hex(entry.key));
-                continue;
+                return Err(anyhow::Error::msg(format!(
+                    "Token meta not found for address: 0x{:?}",
+                    Hex(entry.key)
+                )));
             }
 
             if let Ok(token_metadata) = TokenMetadata::decode(entry.response.unwrap().value.unwrap().value.as_slice())

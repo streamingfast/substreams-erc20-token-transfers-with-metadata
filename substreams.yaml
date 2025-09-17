@@ -24,11 +24,10 @@ binaries:
 modules:
   - name: map_tokens_transfers
     kind: map
-    initialBlock: 22463000
     inputs:
       - source: sf.ethereum.type.v2.Block
       - foundational-store: erc20-token-metadata@v0.1.0
     output:
       type: proto:erc20.metadata.v1.TokenTransfers
 
-network: ethereum
+network: mainnet
